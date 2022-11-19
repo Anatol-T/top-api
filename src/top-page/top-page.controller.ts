@@ -13,6 +13,8 @@ import { FindTopPageDto } from './dto/find-top-page.dto'
 
 @Controller('top-page')
 export class TopPageController {
+  constructor() {}
+
   @Post('create')
   async create(@Body() dto: Omit<TopPageModel, '_id'>) {
     console.log()
