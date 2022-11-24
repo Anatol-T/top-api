@@ -15,6 +15,7 @@ import { CreateReviewDto } from './dto/create-review.dto'
 import { ReviewService } from './review.service'
 import { REVIEW_NOT_FOUND } from './review.constants'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
+import { UserEmailDecorator } from '../decorators/user-email.decorator'
 
 @Controller('review')
 export class ReviewController {
@@ -33,9 +34,10 @@ export class ReviewController {
       throw new HttpException(REVIEW_NOT_FOUND, HttpStatus.NOT_FOUND)
     }
   }
-
+  @UseGuards(JwtAuthGuard)
   @Get('byProduct/:productId')
-  async getByProduct(@Param('productId') productId: string) {
+  async getByProduct(@Param('productId') productId: string, @UserEmailDecorator() email: string) {
+    console.log(email)
     return this.reviewService.findByProductId(productId)
   }
 }
