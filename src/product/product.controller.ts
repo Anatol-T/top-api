@@ -4,38 +4,53 @@ import {
   Delete,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   Patch,
   Post,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common'
 import { ProductModel } from './product.model/product.model'
 import { FindProductDto } from './dto/find-product.dto'
+import { CreateProductDto } from './dto/create-product.dto'
+import { ProductService } from './product.service'
 
 @Controller('product')
 export class ProductController {
+  constructor(private readonly productService: ProductService) {}
+
   @Post('create')
-  async create(@Body() dto: Omit<ProductModel, '_id'>) {
-    console.log()
+  async create(@Body() dto: CreateProductDto) {
+    return this.productService.create(dto)
   }
 
   @Get(':id')
   async get(@Param('id') id: string) {
-    console.log()
+    const product = await this.productService.findDyId(id)
+    if (!product) throw new NotFoundException('Product not found')
+
+    return product
   }
 
   @Delete(':id')
   async delete(@Param('id') id: string) {
-    console.log()
+    const deletedProduct = await this.productService.deleteById(id)
+    if (!deletedProduct) throw new NotFoundException('Product not found')
   }
 
   @Patch(':id')
   async patch(@Param('id') id: string, @Body() dto: ProductModel) {
-    console.log()
+    const updatedProduct = await this.productService.updateById(id, dto)
+    if (!updatedProduct) throw new NotFoundException('Product not found')
+
+    return updatedProduct
   }
 
+  @UsePipes(new ValidationPipe())
   @HttpCode(200)
-  @Post()
+  @Post('find')
   async find(@Body() dto: FindProductDto) {
-    console.log()
+    return this.productService.findWithReviews(dto)
   }
 }
