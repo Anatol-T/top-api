@@ -10,6 +10,7 @@ import { TypegooseModule } from 'nestjs-typegoose'
 import { getMongoConfig } from './configs/mongo.config'
 import { TelegramModule } from './telegram/telegram.module'
 import { getTelegramConfig } from './configs/telegram.config'
+import { FilesModule } from './files/files.module'
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { getTelegramConfig } from './configs/telegram.config'
     TopPageModule,
     ProductModule,
     ReviewModule,
+    FilesModule,
     TelegramModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
